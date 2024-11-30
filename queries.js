@@ -56,27 +56,24 @@ const getUsers = (req, res) => {
 
 const getRange = (req, res) => {
 
-    // app.get("/search/:start/:finish", (req, res) => {
-    // const query = sql`SELECT * FROM user WHERE id = ${req.params.id}`
-    const query =`SELECT c.uniqueid, c.callerid numero, q.queue,c.datetime_entry_queue fecha, time(c.datetime_entry_queue) horaingreso, c.datetime_end horaabandono,(unix_timestamp(c.datetime_end) - unix_timestamp(datetime_entry_queue))espero 
+    const query = `SELECT c.uniqueid, c.callerid numero, q.queue,c.datetime_entry_queue fecha, time(c.datetime_entry_queue) horaingreso, c.datetime_end horaabandono,(unix_timestamp(c.datetime_end) - unix_timestamp(datetime_entry_queue))espero 
         FROM call_center.call_entry c INNER JOIN call_center.queue_call_entry q ON c.id_queue_call_entry = q.id 
         WHERE c.status = 'abandonada' AND datetime_entry_queue BETWEEN "${req.params.start}" AND "${req.params.finish}";`
 
-        db.query(query, [req.params.start, req.params.finish],
-            (err, results) => {
-                if (err) {
-                    console
-                        .error('Error executing search query:', err);
-                    return res.status(500)
-                        .json(
-                            {
-                                error: 'Internal server error'
-                            });
-                }
-    
-                res.json(results);
-            });
-    // });
+    db.query(query, [req.params.start, req.params.finish],
+        (err, results) => {
+            if (err) {
+                console
+                    .error('Error executing search query:', err);
+                return res.status(500)
+                    .json(
+                        {
+                            error: 'Internal server error'
+                        });
+            }
+
+            res.json(results);
+        });
 }
 
 module.exports = {
